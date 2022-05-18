@@ -8,8 +8,9 @@ postRoutes.post("/create", PostController.store)
 postRoutes.get("/post/:uuid", PostController.show)
 postRoutes.post("/update", PostController.update)
 postRoutes.get("/delete/:id", PostController.destroy)
-postRoutes.post("/post/:PostId/like", PostController.likePost)
-postRoutes.get("/post/:PostId/countLike", PostController.countLike)
+
+// postRoutes.post("/post/:PostId/like", PostController.likePost)
+// postRoutes.get("/post/:PostId/countLike", PostController.countLike)
 
 // articleRoutes.get("/", authentication, ArticleController.index)
 // articleRoutes.post("/create", authentication, ArticleController.store)

@@ -8,9 +8,11 @@ route.get('/', (req, res) => {
 // Api Routes
 const userRoutes = require('./api/user.js')
 const postRoutes = require('./api/post.js')
-// const authRoutes = require('./api/auth.js')
+const interactionRoutes = require('./api/interaction')
+const authRoutes = require('./api/auth.js')
 route.use('/api/users', userRoutes)
 route.use('/api/posts', postRoutes)
-// route.use('/api/', authRoutes)
+route.use('/api/posts', interactionRoutes)
+route.use('/api/', authRoutes)
 
 module.exports = route;

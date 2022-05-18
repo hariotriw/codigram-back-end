@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Comment.belongsTo(models.User)
+      Comment.belongsTo(models.User, {foreignKey: 'UserId', targetKey: 'uuid'})
       Comment.belongsTo(models.Post)
     }
   }
@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     UserId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       validate: {
         notEmpty: {
           message: "User ID can't be empty!"
@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     PostId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       validate: {
         notEmpty: {
           message: "Post ID can't be empty!"

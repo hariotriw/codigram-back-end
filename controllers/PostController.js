@@ -100,123 +100,127 @@ class PostController {
     }
 
     // fungsi like post
-    static async likePost(req, res){
-        try {
-            let PostId = req.params.PostId
-            // let PostId = "VtvNPWljxo"
-            let { UserId, likeFlag} = req.body;
-            let strId = strGenerator(10)
-            // if(+likeFlag === 0){
-            //     likeFlag = 1
-            // } else {
-            //     likeFlag = 0
-            // }
-            // console.log(likeFlag)
-            // let newLikeFlag = !likeFlag
-            // console.log(newLikeFlag)
+    // static async likePost(req, res){
+    //     try {
+    //         let PostId = req.params.PostId
+    //         // let PostId = "VtvNPWljxo"
+    //         let { UserId, likeFlag} = req.body;
+    //         let strId = strGenerator(10)
+    //         // if(+likeFlag === 0){
+    //         //     likeFlag = 1
+    //         // } else {
+    //         //     likeFlag = 0
+    //         // }
+    //         // console.log(likeFlag)
+    //         // let newLikeFlag = !likeFlag
+    //         // console.log(newLikeFlag)
             
-            let foundLiked = await Like.findOne({
-                where: {
-                    UserId, PostId
-                }
-            })
+    //         let foundLiked = await Like.findOne({
+    //             where: {
+    //                 UserId, PostId
+    //             }
+    //         })
 
-            if(foundLiked){
-                console.log('liked found')
-                foundLiked.likeFlag = !foundLiked.likeFlag
-                let user = await Like.update({
-                     likeFlag: +foundLiked.likeFlag
-                }, {
-                where: {
-                    UserId, PostId
-                    }
-                })
-                1 === +foundLiked.likeFlag ? res.status(201).json({message: 'liked succesfully!!'}) : res.status(201).json({message: 'unliked succesfully!!'}) 
-                // res.status(201).json({message: 'liked succesfully!!'}) 
-            } else {
-                console.log('liked not found')
-                // let user = await Like.create({
-                //     strId, UserId, PostId, likeFlag
-                // })
-                // console.log('Create new like')
-                let foundUser = await User.findOne({
-                    where: {
-                        uuid: UserId
-                    }
-                })
-                let foundPost = await Post.findOne({
-                    where: {
-                        strId: PostId
-                    }
-                })
-                // foundUser && foundPost ? await Like.create({
-                //     strId, UserId, PostId, likeFlag
-                // }) : 
-                //     !foundUser && foundPost ? res.status(404).json({message: 'invalid user'}) :
-                //         foundUser && !foundPost ? res.status(404).json({message: 'invalid post'}) : res.status(404).json({message: 'invalid action'})
-                if(foundUser && foundPost) {
-                    let likeFlag = +1
-                    await Like.create({
-                        strId, UserId, PostId, likeFlag
-                    })
-                    res.status(201).json({message: 'Liked succesfully!'})
-                } else if(!foundUser && foundPost) {
-                    res.status(404).json({message: 'invalid user'})
-                } else if (foundUser && !foundPost) {
-                    res.status(404).json({message: 'invalid post'})
-                } else {
-                    res.status(404).json({message: 'invalid action'})
-                }
+    //         if(foundLiked){
+    //             console.log('liked found')
+    //             foundLiked.likeFlag = !foundLiked.likeFlag
+    //             let user = await Like.update({
+    //                  likeFlag: +foundLiked.likeFlag
+    //             }, {
+    //             where: {
+    //                 UserId, PostId
+    //                 }
+    //             })
+    //             1 === +foundLiked.likeFlag ? res.status(201).json({message: 'liked succesfully!!'}) : res.status(201).json({message: 'unliked succesfully!!'}) 
+    //             // res.status(201).json({message: 'liked succesfully!!'}) 
+    //         } else {
+    //             console.log('liked not found')
+    //             // let user = await Like.create({
+    //             //     strId, UserId, PostId, likeFlag
+    //             // })
+    //             // console.log('Create new like')
+    //             let foundUser = await User.findOne({
+    //                 where: {
+    //                     uuid: UserId
+    //                 }
+    //             })
+    //             let foundPost = await Post.findOne({
+    //                 where: {
+    //                     strId: PostId
+    //                 }
+    //             })
+    //             // foundUser && foundPost ? await Like.create({
+    //             //     strId, UserId, PostId, likeFlag
+    //             // }) : 
+    //             //     !foundUser && foundPost ? res.status(404).json({message: 'invalid user'}) :
+    //             //         foundUser && !foundPost ? res.status(404).json({message: 'invalid post'}) : res.status(404).json({message: 'invalid action'})
+    //             if(foundUser && foundPost) {
+    //                 let likeFlag = +1
+    //                 await Like.create({
+    //                     strId, UserId, PostId, likeFlag
+    //                 })
+    //                 res.status(201).json({message: 'Liked succesfully!'})
+
+    //             } else if(!foundUser && foundPost) {
+    //                 res.status(404).json({message: 'invalid user'})
+
+    //             } else if (foundUser && !foundPost) {
+    //                 res.status(404).json({message: 'invalid post'})
+
+    //             } else {
+    //                 res.status(404).json({message: 'invalid action'})
+    //             }
                
-            }
+    //         }
 
             
 
-            // res.json(foundLiked)
-            // res.json(likee)
-            // res.json('berhasil menambahkan like')
+    //         // res.json(foundLiked)
+    //         // res.json(likee)
+    //         // res.json('berhasil menambahkan like')
             
-        } catch (err) {
-            res.json(err)
-        }
-    }
+    //     } catch (err) {
+    //         res.json(err)
+    //     }
+    // }
 
     // count likes
     // --- fungsi untuk merender dan menampilkan semua data users ---
-    static async countLike(req, res){
-        try {
-            // user id dari access token
-            let UserId = "2c7cb6df-9867-4ecd-aaa6-ba105c155282"
-            let PostId = req.params.PostId
-            // let result = await Like.findAll({
-            //     include: [{
-            //         model: User,
-            //         foreignKey: 'uuid'
-            //     }],
-            //     order: [
-            //         ['id', 'asc']
-            //     ]
-            // })
+    // static async countLike(req, res){
+    //     try {
+    //         // user id dari access token
+    //         let UserId = "2c7cb6df-9867-4ecd-aaa6-ba105c155282"
+    //         let PostId = req.params.PostId
 
-            let result = await Like.findAll({
-                include: [{
-                    model: User,
-                    foreignKey: 'uuid',
-                    attributes: { exclude: ['id', 'email', 'password', 'status', 'createdAt', 'updatedAt'] }
-                }],
-                attributes: { exclude: ['id', 'strId', 'createdAt', 'updatedAt'] }
+    //         // let result = await Like.findAll({
+    //         //     include: [{
+    //         //         model: User,
+    //         //         foreignKey: 'uuid'
+    //         //     }],
+    //         //     order: [
+    //         //         ['id', 'asc']
+    //         //     ]
+    //         // })
+
+    //         let result = await Like.findAll({
+    //             include: [{
+    //                 model: User,
+    //                 foreignKey: 'uuid',
+    //                 attributes: { exclude: ['id', 'email', 'password', 'status', 'createdAt', 'updatedAt'] }
+    //             }],
+    //             attributes: { exclude: ['id', 'strId', 'createdAt', 'updatedAt'] }
                 
-            })
+    //         })
 
-            res.json({
-                count: result.length,
-                usersLiking: result
-            })
-            // res.render('./user/index.ejs', {users:result})
-        } catch (err) {
-            res.json(err)
-        }
-    }
+    //         res.json({
+    //             count: result.length,
+    //             usersLiking: result
+    //         })
+    //         // res.render('./user/index.ejs', {users:result})
+    //     } catch (err) {
+    //         res.json(err)
+    //     }
+    // }
 }
 
 module.exports = PostController;

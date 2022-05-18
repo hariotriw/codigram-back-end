@@ -1,9 +1,9 @@
 const {Router} = require('express')
-const apiRoutes = Router()
+const authRoutes = Router()
 const {AuthController} = require('../../controllers')
 
-apiRoutes.post("/register", AuthController.register)
-apiRoutes.post("/login", AuthController.login)
-apiRoutes.post("/logout", AuthController.logout)
+authRoutes.post("/register", AuthController.register)
+authRoutes.post("/login", AuthController.login)
+authRoutes.post("/logout", AuthController.logout)
 
-module.exports = apiRoutes;
+module.exports = authRoutes;
