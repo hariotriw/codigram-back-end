@@ -7,13 +7,20 @@ class PostController {
     static async index(req, res){
         try {
             let result = await Post.findAll({
-                order: [
-                    ['id', 'asc']
-                ]
+                include: [{
+                        model: User,
+                        foreignKey: 'uuid',
+                        attributes: { exclude: ['id', 'email', 'password', 'status', 'createdAt', 'updatedAt'] }
+                    },{
+                        model: Comment,
+                        foreignKey: 'strId'
+                    },{
+                        model: Like,
+                        foreignKey: 'strId'
+                    }]
             })
 
             res.json({posts:result})
-            // res.render('./user/index.ejs', {users:result})
         } catch (err) {
             res.json(err)
         }
