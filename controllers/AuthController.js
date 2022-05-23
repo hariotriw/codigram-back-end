@@ -6,7 +6,7 @@ const { v4: uuidv4 } = require('uuid')
 class AuthController {
     static async register(req, res) {
         try{
-            const {username, fullname, email, password} = req.body
+            const {username, fullname, email, password, repassword} = req.body
             let uuid = uuidv4()
             let avatar = null
             const hashPwd = bcrypt.hashSync(password, 5)
@@ -23,17 +23,19 @@ class AuthController {
     }
     static async login(req, res) {
         try{
+            console.log('masuk ke login controller')
             const {username, password} = req.body
             let user = await User.findOne({
                 where: {
                     username
                 }
             })
+            // console.log(req.body)
 
             if(user){
                 if(bcrypt.compareSync(String(password) , user.password)){
                     let access_token = jwt.tokenGenerator(user)
-                    let verifyToken = jwt.tokenVerifier(access_token, user.password)
+                    // let verifyToken = jwt.tokenVerifier(access_token, user.password)
                     // localStorage.setItem('access_token', access_token)
                     res.json(access_token)
                     // res.json(verifyToken)
@@ -54,6 +56,7 @@ class AuthController {
             res.status(500).json(err)
         }
     }
+    
     static async logout(req, res) {
         try{
             // const {username, name, email, password} = req.body

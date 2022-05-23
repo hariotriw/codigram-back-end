@@ -2,6 +2,7 @@ const {User} = require('../models')
 const { v4: uuidv4 } = require('uuid')
 const bcrypt = require('bcrypt')
 const {strGenerator} = require('../helpers/strRandom')
+const jwt = require('../helpers/jwtHelpers')
 
 class UserController {
     
@@ -29,12 +30,13 @@ class UserController {
             let uuid = uuidv4()
             // console.log(uuid)
             let avatar = null
+            let bio = null
             let status = 0
             let { username, email, password, fullname} = req.body;
             let hashPwd = bcrypt.hashSync(password, 5)
 
             let user = await User.create({
-                uuid, username, email, password:hashPwd, fullname, avatar, status
+                uuid, username, email, password:hashPwd, fullname, avatar, bio, status
             })
 
             res.json(user)
@@ -49,19 +51,22 @@ class UserController {
     // --- fungsi untuk merender dan menampilkan sebuah data user ---
     static async show(req, res){
         try {
-            let uuid = req.params.uuid
-            console.log(uuid)
+            // console.log(req.headers)
+            const access_token = req.headers['access-token']
+            // const data = jwt.tokenVerifier(access_token)
+            let verifyToken = jwt.tokenVerifier(access_token, 'secret')
+            // console.log(verifyToken.uuid)
+            let uuid = verifyToken.uuid
+            // console.log(uuid)
             let user = await User.findOne({
                 where: {
                     uuid
                 }
             })
-            // let result = await User.findByPk(id);
-            console.log(user)
+            // res.json(req.headers['access-token'])
+            // console.log(user)
+            res.json(user)
 
-            res.json({user})
-            // res.render('./user/show.ejs', {user: result})
-            
         } catch (err) {
             res.json(err)
         }
@@ -70,13 +75,14 @@ class UserController {
     // --- fungsi untuk mengelola form edit user di back-end ---
     static async update(req, res){
         try {
-            let { uuid, username, email, fullname, avatar, status} = req.body;
+            let { uuid, username, email, fullname, avatar, bio, status} = req.body;
 
             let result = await User.update({
                 username, 
                 email, 
                 fullname, 
                 avatar, 
+                bio,
                 status
             }, {
                 where: {

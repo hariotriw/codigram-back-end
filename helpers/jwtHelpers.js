@@ -4,7 +4,7 @@ const tokenGenerator = (data) => {
     const {id, uuid, username, email, status, password} = data
     return jwt.sign({
         id, uuid, username, email, status
-    }, password)
+    }, 'secret')
 }
 
 const tokenVerifier = (data, password) => {

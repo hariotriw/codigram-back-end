@@ -1,5 +1,6 @@
 const {Post, User, Comment, Like} = require('../models')
 const { strGenerator} = require('../helpers/strRandom')
+const jwt = require('../helpers/jwtHelpers')
 
 class PostController {
     
@@ -29,12 +30,21 @@ class PostController {
     // --- fungsi untuk mengelola form create di back-end ---
     static async store(req, res){
         try {
-            let { UserId, image, caption} = req.body;
+            console.log('masuk ke post controller')
+            const access_token = req.headers['access-token']
+            // console.log(access_token)
+            let verifyToken = jwt.tokenVerifier(access_token, 'secret')
+            console.log(verifyToken)
+            let uuid = verifyToken.uuid
+            console.log(req.body)
+            let { image, caption} = req.body;
             let strId = strGenerator(10)
-
+            console.log(strId)
+            
             let post = await Post.create({
-                strId, UserId, image, caption
+                strId, UserId:uuid, image, caption
             })
+            console.log(post)
 
             res.json(post)
             // res.json('berhasil menambahkan user')
@@ -48,16 +58,29 @@ class PostController {
     // --- fungsi untuk merender dan menampilkan sebuah data user ---
     static async show(req, res){
         try {
-            let id = req.params.uuid
-            // let result = User.findOne({
-            //     where: {
-            //         id: id
-            //     }
-            // })
-            let result = await User.findByPk(id);
+            let strId = req.params.strId
+            console.log(strId);
+            
+            let post = await Post.findOne({
+                where: {
+                    strId
+                },
+                include: [{
+                    model: User,
+                    foreignKey: 'uuid',
+                    attributes: { exclude: ['id', 'email', 'password', 'status', 'createdAt', 'updatedAt'] }
+                },{
+                    model: Comment,
+                    foreignKey: 'strId'
+                },{
+                    model: Like,
+                    foreignKey: 'strId'
+                }]
+            })
             // console.log(result)
 
-            res.json({user: result})
+            res.json(post)
+            // res.json({post: result})
             // res.render('./user/show.ejs', {user: result})
             
         } catch (err) {

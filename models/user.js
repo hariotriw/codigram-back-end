@@ -61,6 +61,11 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
       }
     },
+    bio: {
+      type: DataTypes.STRING,
+      validate: {
+      }
+    },
     status: {
       type: DataTypes.INTEGER,
       validate: {

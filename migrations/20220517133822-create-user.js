@@ -32,6 +32,9 @@ module.exports = {
       avatar: {
         type: Sequelize.STRING
       },
+      bio: {
+        type: Sequelize.STRING
+      },
       status: {
         type: Sequelize.INTEGER
       },

@@ -3,7 +3,8 @@ const PostController = require('./PostController')
 const AuthController = require('./AuthController')
 const InteractionController = require('./InteractionController')
 
-module.exports = { UserController, PostController, 
+module.exports = { 
+    UserController, PostController, 
     AuthController,
     InteractionController
  }
