@@ -1,4 +1,5 @@
 const {Post, User, Comment, Like} = require('../models')
+const { Op } = require("sequelize");
 const { strGenerator} = require('../helpers/strRandom')
 const jwt = require('../helpers/jwtHelpers')
 
@@ -7,6 +8,7 @@ class PostController {
     // --- fungsi untuk merender dan menampilkan semua data users ---
     static async index(req, res){
         try {
+            
             let result = await Post.findAll({
                 include: [{
                         model: User,
@@ -19,6 +21,59 @@ class PostController {
                         model: Like,
                         foreignKey: 'strId'
                     }]
+            })
+
+            res.json({posts:result})
+        } catch (err) {
+            res.json(err)
+        }
+    }
+
+    // --- fungsi untuk merender dan menampilkan semua data posts dri users ---
+    static async myPosts(req, res){
+        try {
+            // console.log('masuk ke post controller')
+            const access_token = req.headers['access-token']
+            // console.log(access_token)
+            let verifyToken = jwt.tokenVerifier(access_token, 'secret')
+            console.log(verifyToken)
+            let uuid = verifyToken.uuid
+            console.log(req.body)
+            
+            let result = await Post.findAll({
+                where: {
+                    UserId: uuid
+                }
+            })
+
+            res.json({posts:result})
+        } catch (err) {
+            res.json(err)
+        }
+    }
+
+    // --- fungsi untuk merender dan menampilkan semua data posts dri users ---
+    static async explore(req, res){
+        try {
+            // console.log('masuk ke post controller')
+            const access_token = req.headers['access-token']
+            // console.log(access_token)
+            let verifyToken = jwt.tokenVerifier(access_token, 'secret')
+            console.log(verifyToken)
+            let uuid = verifyToken.uuid
+            console.log(req.body)
+            
+            // let result = await Post.findAll({
+            //     where: {
+            //         UserId: uuid
+            //     }
+            // })
+            let result = await Post.findAll({
+                where: {
+                    UserId: {
+                        [Op.notIn]: [uuid]
+                    }
+                }
             })
 
             res.json({posts:result})
@@ -89,17 +144,41 @@ class PostController {
     }
     
     // --- fungsi untuk mengelola form edit user di back-end ---
+    static async edit(req, res){
+        try {
+            let strId = req.params.strId
+            console.log(strId);
+            
+            let post = await Post.findOne({
+                where: {
+                    strId: strId
+                }
+               
+            })
+            // console.log(result)
+
+            res.json(post)
+
+            // res.redirect('/users')
+            // res.json('berhasil mengubah user')
+        } catch (err) {
+            res.json(err)
+        }
+    }
+
+    // --- fungsi untuk mengelola form edit user di back-end ---
     static async update(req, res){
         try {
-            let { uuid, username, email, password, fullname, avatar, status} = req.body;
+            console.log(req.params.strId)
+            console.log(req.body)
+            let strId = req.params.strId
+            let { caption } = req.body;
 
-            let result = await User.update({
-                fullname: fullname,
-                id_card: id_card,
-                type_card: type_card
+            let result = await Post.update({
+                caption: caption
             }, {
                 where: {
-                    id: +id
+                    strId: strId
                 }
             })
 
@@ -113,11 +192,14 @@ class PostController {
     // --- fungsi untuk mengelola delete sebuah user di back-end ---
     static async destroy(req, res){
         try {
-            let id = req.params.id
+            console.log('masuk controller')
+            console.log(req.body)
+            const { UserId, strId} = req.body
+            // let id = req.params.id
 
-            let result = await User.destroy({
+            let result = await Post.destroy({
                 where: {
-                    id: id
+                    UserId: UserId, strId: strId
                 }
             })
 
